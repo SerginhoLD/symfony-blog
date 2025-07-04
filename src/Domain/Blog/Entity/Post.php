@@ -9,7 +9,7 @@ use App\Domain\Blog\Entity\Post\Status;
 final class Post
 {
     public function __construct(
-        readonly private Id $id,
+        private readonly Id $id,
         private Status $status,
         private string $title,
         private string $content,

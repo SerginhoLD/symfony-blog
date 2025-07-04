@@ -1,12 +1,13 @@
-FROM unit:1.34.1-php8.3
+FROM unit:1.34.2-php8.4
 
 # docker build -f docker/php/Dockerfile -t srgiz/blog-php:latest .
 # docker exec -i -t blog-php sh
 # docker exec -i -t blog-php bash
 
 ENV DOCKER_APP_UID=1000
-ENV XDEBUG_VERSION=3.4.1
-ENV REDIS_VERSION=6.1.0
+# https://xdebug.org/docs/compat
+ENV XDEBUG_VERSION=3.4.6
+ENV REDIS_VERSION=6.2.0
 
 #RUN apk add --no-cache bash shadow git linux-headers
 
@@ -62,7 +63,7 @@ RUN apt-get install -y libffi-dev librdkafka-dev \
 
 COPY ./unit-config.json /docker-entrypoint.d/
 
-COPY --from=composer:2.8.4 /usr/bin/composer /usr/local/bin/composer
+COPY --from=composer:2.8.12 /usr/bin/composer /usr/local/bin/composer
 
 WORKDIR /var/www
 RUN usermod -u $DOCKER_APP_UID www-data

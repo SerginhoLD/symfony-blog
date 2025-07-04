@@ -19,8 +19,8 @@ class JsonRpcResponse extends JsonResponse implements \JsonSerializable
      * @throws \LogicException
      */
     public function __construct(
-        readonly public mixed $result,
-        readonly public ?JsonRpcError $error = null,
+        public readonly mixed $result,
+        public readonly ?JsonRpcError $error = null,
         array $headers = [],
     ) {
         if (
