@@ -75,26 +75,28 @@ services:
     extends:
       file: compose.common.yaml
       service: postgres
+    build:
+      dockerfile: master.Dockerfile
     container_name: blog-database-master
     ports:
       - "${DOCKER_APP_IP}:5432:5432"
-    environment:
-      POSTGRESQL_REPLICATION_MODE: master
     volumes:
-      - blog-postgres17-master:/bitnami/postgresql
+      - 'blog-postgres18-master:/var/lib/postgresql/data'
+
   database-slave1:
     extends:
       file: compose.common.yaml
       service: postgres
+    build:
+      dockerfile: replica.Dockerfile
     container_name: blog-database-slave1
     ports:
       - "${DOCKER_APP_IP}:5433:5432"
     environment:
-      POSTGRESQL_REPLICATION_MODE: slave
-      POSTGRESQL_MASTER_HOST: database-master
-      POSTGRESQL_MASTER_PORT_NUMBER: 5432
+      PGHOST: database-master # for pg_basebackup auth replication user
+    entrypoint: [ "/usr/local/bin/replica.entrypoint.sh" ]
     volumes:
-      - blog-postgres17-slave1:/bitnami/postgresql
+      - 'blog-postgres18-slave1:/var/lib/postgresql/data'
     depends_on:
       - database-master
 ###< doctrine/doctrine-bundle ###
@@ -111,10 +113,10 @@ networks:
     name: blog.local
 
 volumes:
-  blog-postgres17-master:
-    name: blog-postgres17-master
-  blog-postgres17-slave1:
-    name: blog-postgres17-slave1
+  blog-postgres18-master:
+    name: blog-postgres18-master
+  blog-postgres18-slave1:
+    name: blog-postgres18-slave1
   blog-redis:
     name: blog-redis
   blog-redisinsight:
